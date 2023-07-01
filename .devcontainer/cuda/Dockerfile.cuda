@@ -152,7 +152,7 @@ RUN cd $HOME && chmod +x zsh_docker.sh && ./zsh_docker.sh \
         -p https://github.com/changyuheng/zsh-interactive-cd \
         -p https://github.com/chrissicool/zsh-256color \
         -p https://github.com/zsh-users/zsh-autosuggestions \
-        -p https://github.com/zsh-users/zsh-completions \        
+        -p https://github.com/zsh-users/zsh-completions \
         -p https://github.com/zshzoo/cd-ls \
         -p https://github.com/zdharma-continuum/fast-syntax-highlighting \
         -a "set CD_LS_COMMAND=lsd" \
@@ -161,7 +161,7 @@ RUN cd $HOME && chmod +x zsh_docker.sh && ./zsh_docker.sh \
 # Initialize ROS depedencies
 RUN sudo $(which rosdep) init && rosdep update --include-eol-distros && \
         sudo apt update \
-        && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | xargs -r sudo apt upgrade
+        && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | xargs -r sudo apt upgrade -y
 
 # Prepare catkin workspace
 ENV CATKIN_WS=/home/$USERNAME/catkin_ws

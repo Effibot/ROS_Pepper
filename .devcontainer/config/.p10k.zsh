@@ -102,11 +102,17 @@
 
 
   function prompt_ros() {
- # Check if the $ROS_DISTRO variable is set
+    # Check if the $ROS_DISTRO variable is set
     if [ -n "$ROS_DISTRO" ]; then
+        if [[ "$ROS_DISTRO" == "noetic" ]]; then
+          local icon="🐢"
+        else
+          local icon="🦊"
+        fi
         # Display the $ROS_DISTRO value
-        p10k segment -f 208 -i "🤖" -t "$ROS_DISTRO"
-    fi  }
+        p10k segment -f 208 -i "$icon" -t "$ROS_DISTRO"
+    fi  
+  }
     # User-defined prompt segments can be customized the same way as built-in segments.
   typeset -g POWERLEVEL9K_ROS_FOREGROUND=15
   typeset -g POWERLEVEL9K_ROS_BACKGROUND=26
