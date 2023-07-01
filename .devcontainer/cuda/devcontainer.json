@@ -1,0 +1,71 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+	"name": "ROS-Workspace",
+	"dockerFile": "Dockerfile.cuda",
+	"build": {
+		"args": {
+			"WORKSPACE": "${containerWorkspaceFolder}"
+		}
+	},
+	"remoteUser": "ros",
+	"runArgs": [
+		"--network=host",
+		"--privileged",
+		"--cap-add=SYS_PTRACE",
+		"--volume=/tmp/.X11-unix:/tmp/.X11-unix",
+		"--volume=/dev:/dev",
+		"--volume=${HOME}/.ssh:/home/ros/.ssh:ro",
+		"--ipc=host",
+		"--gpus=all"
+		// uncomment to use intel iGPUContainer
+		// "--device=/dev/dri"
+	],
+	"containerEnv": {
+		"DISPLAY": "${localEnv:DISPLAY}", // Needed for GUI try ":0" for windows
+		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+		"XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_D IR}",
+		"PULSE_SERVER": "${localEnv:PULSE_SERVER}",
+		"RCUTILS_COlORIZED_OUTPUT": "1",
+		"TERM": "xterm-256color",
+		"WS": "/workspaces/${containerWorkspaceFolderBasename}"
+		// "XAUTHORITY": "/tmp/.docker.xauth"
+		// "LIBGL_ALWAYS_SOFTWARE": "1" // Needed for software rendering of opengl
+	},
+	"mounts": [
+		// "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/.aliases.sh,target=/home/ros/.aliases.sh,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/.bashrc,target=/home/ros/.bashrc,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/.nanorc,target=/home/ros/.nanorc,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/.p10k.zsh,target=/home/ros/.p10k.zsh,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/.rosinstall,target=/home/ros/catkin_ws/src.rosinstall,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/ros2.repos,target=/home/ros/colcon_ws/src/ros2.repos.conf,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/bridge.repos,target=/home/ros/bridge_ws/bridge.repos,type=bind,consistency=cached"
+		// "source=${localWorkspaceFolder}/workspaces/catkin_ws/src,target=/home/ros/workspaces/catkin_ws/src,type=bind,consistency=cached",
+		// "source=${localWorkspaceFolder}/workspaces/colcon_ws/src,target=/home/ros/workspaces/colcon_ws/src,type=bind,consistency=cached",
+		// "source=${localWorkspaceFolder}/workspaces/bridge_ws/src,target=/home/ros/workspaces/bridge_ws/src,type=bind,consistency=cached"
+	],
+	// Set *default* container specific settings.json values on container create.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"althack.ament-task-provider",
+				"betwo.b2-catkin-tools",
+				"DotJoshJohnson.xml",
+				"ms-azuretools.vscode-docker",
+				"ms-iot.vscode-ros",
+				"ms-python.python",
+				"ms-vscode.cpptools",
+				"redhat.vscode-yaml",
+				"smilerobotics.urdf",
+				"streetsidesoftware.code-spell-checker",
+				"twxs.cmake",
+				"yzhang.markdown-all-in-one",
+				"zachflower.uncrustify",
+				"GitHub.copilot",
+				"eamodio.gitlens",
+				"ms-python.black-formatter"
+			]
+		}
+	},
+	"postCreateCommand": "zsh -c ${localworkspaceFolder}/setup.sh"
+}

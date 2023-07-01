@@ -1,0 +1,12 @@
+- git:
+    local-name: ros_type_introspection
+    uri: https://github.com/facontidavide/ros_type_introspection-release.git
+    version: release/noetic/ros_type_introspection/2.1.0-1
+- git:
+    local-name: roboticsgroup_upatras_gazebo_plugins
+    uri: https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git
+    version: master
+# - git:
+#     local-name: ros_tutorials
+#     uri: "https://github.com/ros/ros_tutorials.git"
+#     version: noetic-devel

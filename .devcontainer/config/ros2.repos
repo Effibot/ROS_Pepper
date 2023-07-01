@@ -1,0 +1,6 @@
+# List of repositories to use within your workspace
+repositories:
+  # examples:
+  #   type: git
+  #   url: https://github.com/ros2/examples.git
+  #   version: foxy
