@@ -38,9 +38,9 @@
 		"source=${localWorkspaceFolder}/.devcontainer/config/.bashrc,target=/home/ros/.bashrc,type=bind,consistency=cached",
 		"source=${localWorkspaceFolder}/.devcontainer/config/.nanorc,target=/home/ros/.nanorc,type=bind,consistency=cached",
 		"source=${localWorkspaceFolder}/.devcontainer/config/.p10k.zsh,target=/home/ros/.p10k.zsh,type=bind,consistency=cached",
-		"source=${localWorkspaceFolder}/.devcontainer/config/.rosinstall,target=/home/ros/catkin_ws/src.rosinstall,type=bind,consistency=cached",
-		"source=${localWorkspaceFolder}/.devcontainer/config/ros2.repos,target=/home/ros/colcon_ws/src/ros2.repos.conf,type=bind,consistency=cached",
-		"source=${localWorkspaceFolder}/.devcontainer/config/bridge.repos,target=/home/ros/bridge_ws/bridge.repos,type=bind,consistency=cached"
+		"source=${localWorkspaceFolder}/.devcontainer/config/ros1.repos,target=/home/ros/catkin_ws/src/ros1.repos,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/ros2.repos,target=/home/ros/colcon_ws/src/ros2.repos,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/.devcontainer/config/bridge.repos,target=/home/ros/bridge_ws/src/bridge.repos,type=bind,consistency=cached"
 		// "source=${localWorkspaceFolder}/workspaces/catkin_ws/src,target=/home/ros/workspaces/catkin_ws/src,type=bind,consistency=cached",
 		// "source=${localWorkspaceFolder}/workspaces/colcon_ws/src,target=/home/ros/workspaces/colcon_ws/src,type=bind,consistency=cached",
 		// "source=${localWorkspaceFolder}/workspaces/bridge_ws/src,target=/home/ros/workspaces/bridge_ws/src,type=bind,consistency=cached"

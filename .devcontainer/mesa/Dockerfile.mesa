@@ -156,7 +156,7 @@ RUN cd $HOME && chmod +x zsh_docker.sh && ./zsh_docker.sh \
 
 # Initialize ROS depedencies
 RUN sudo $(which rosdep) init && rosdep update --include-eol-distros && \
-        sudo apt update \
+        sudo apt update  && sudo apt install -y ros-noetic-naoqi-libqi ros-noetic-naoqi-libqicore\
         && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | xargs -r sudo apt upgrade -y
 
 # Prepare catkin workspace
@@ -164,12 +164,18 @@ ENV CATKIN_WS=/home/$USERNAME/catkin_ws
 RUN mkdir -p /home/$USERNAME/catkin_ws/src \
         && chown -R $USERNAME:$USERNAME /home/$USERNAME/catkin_ws
 # Initialize catkin workspace and build desired packages
-COPY --chown=$USER_UID:$USER_UID ./config/.rosinstall $CATKIN_WS/src
+COPY --chown=$USER_UID:$USER_UID ./config/ros1.repos $CATKIN_WS/src
 RUN cd $CATKIN_WS && rosdep install --from-paths src --ignore-src -r -y \
-        && rosinstall -c src \
+        && vcs import < src/ros1.repos src \
         && cd $CATKIN_WS \
         && zsh -c "source /opt/ros/noetic/setup.zsh && catkin build" \
-        && rm -rf src/.rosinstall src/.rosinstall.bak
+        && rm -rf src/ros1.repos
+
+# Install Pepper Meshes
+RUN echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections \
+        && echo 'ros-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true' | sudo debconf-set-selections \
+        && sudo apt update && sudo apt install -y ros-noetic-pepper-meshes \
+        && sudo rm -rf /var/lib/apt/lists/*
 
 # Unset
 ENV ROS_DISTRO=

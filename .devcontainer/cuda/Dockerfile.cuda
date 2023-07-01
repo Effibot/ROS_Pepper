@@ -168,12 +168,18 @@ ENV CATKIN_WS=/home/$USERNAME/catkin_ws
 RUN mkdir -p /home/$USERNAME/catkin_ws/src \
         && chown -R $USERNAME:$USERNAME /home/$USERNAME/catkin_ws
 # Initialize catkin workspace and build desired packages
-COPY --chown=$USER_UID:$USER_UID ./config/.rosinstall $CATKIN_WS/src
+COPY --chown=$USER_UID:$USER_UID ./config/ros1.repos $CATKIN_WS/src
 RUN cd $CATKIN_WS && rosdep install --from-paths src --ignore-src -r -y \
-        && rosinstall -c src \
+        && vcs import < src/ros1.repos src \
         && cd $CATKIN_WS \
         && zsh -c "source /opt/ros/noetic/setup.zsh && catkin build" \
-        && rm -rf src/.rosinstall src/.rosinstall.bak
+        && rm -rf src/ros1.repos
+
+# Install Pepper Meshes
+RUN echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections \
+        && echo 'ros-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true' | sudo debconf-set-selections \
+        && sudo apt update && sudo apt install -y ros-noetic-pepper-meshes \
+        && sudo rm -rf /var/lib/apt/lists/*
 
 # Unset
 ENV ROS_DISTRO=
@@ -192,6 +198,7 @@ RUN sudo apt update && cd $COLCON_WS \
         --cmake-args "-DCMAKE_BUILD_TYPE=RelWithDebInfo" \
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=On" -Wall -Wextra -Wpedantic'\
         && rm -rf src/ros2.repos
+
 # Unset
 ENV ROS_DISTRO=
 ENV CMAKE_PREFIX_PATH=
@@ -205,6 +212,7 @@ RUN cd $BRIDGE_WS && vcs import < src/bridge.repos src \
         # Build packages to be bridged (custom msgs) *before* building the bridge
         && cd $BRIDGE_WS && colcon build --symlink-install --packages-skip ros1_bridge \
         && rm -rf src/bridge.repos
+
 # Build the ros bridge, which now searches paths to connect custom msgs ros1 <-> ros2 in path of installed pkgs (sourced)
 RUN cd $BRIDGE_WS \
         # remove controller-manager-msgs package to avoid known error (issue 329 on github)

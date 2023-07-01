@@ -4,3 +4,7 @@ repositories:
   #   type: git
   #   url: https://github.com/ros2/examples.git
   #   version: foxy
+  naoqi_bridge_msgs:
+    type: git
+    url: https://github.com/simwijs/naoqi_bridge_msgs.git
+    version: ros2_bridge_fix

@@ -177,4 +177,7 @@ bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
 # Additional environment variables
-export ws="/workspaces/ROS_Workspace"
+export ws="/workspaces/ROS_Pepper"
+
+# vcs tool completion
+source /usr/share/vcstool-completion/vcs.zsh
