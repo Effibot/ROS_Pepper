@@ -6,7 +6,19 @@
     "files.associations": {
         "*.repos": "yaml",
         "*.world": "xml",
-        "*.xacro": "xml"
+        "*.xacro": "xml",
+        "array": "cpp",
+        "bitset": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "iterator": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "unordered_map": "cpp",
+        "regex": "cpp",
+        "tuple": "cpp"
     },
     "python.analysis.extraPaths": [
         "/opt/ros/foxy/lib/python3.10/site-packages/"

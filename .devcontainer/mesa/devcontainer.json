@@ -19,7 +19,7 @@
 		"--ipc=host",
 		"--gpus=all",
 		// uncomment to use intel iGPUContainer
-		"--device=/dev/dri"
+		// "--device=/dev/dri"
 	],
 	"containerEnv": {
 		"DISPLAY": "${localEnv:DISPLAY}", // Needed for GUI try ":0" for windows

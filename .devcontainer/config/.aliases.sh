@@ -24,8 +24,27 @@ alias pip='python -m pip'
 # alias movejoint='rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller'
 # alias cb='cd ~/catkin_ws && catkin build -j5 --summarize && source devel/setup.zsh'
 # alias rviz='rosrun rviz rviz -d ~/workspace/src/rviz_config/pepper.rviz'
-alias noetic="source /opt/ros/noetic/setup.zsh; source ~/catkin_ws/devel/setup.zsh"
-alias foxy="source /opt/ros/foxy/setup.zsh; source ~/colcon_ws/install/setup.zsh; source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.zsh"
+
+# ROS1
+noetic_f() {
+        echo "Sourcing ROS1 Noetic"
+        source /opt/ros/noetic/setup.zsh        
+        echo "Sourcing ROS1 Noetic Workspace"
+        source ~/catkin_ws/devel/setup.zsh        
+}
+
+# ROS2
+foxy_f(){
+        echo "Sourcing ROS2 Foxy"
+        source /opt/ros/foxy/setup.zsh
+        echo "Sourcing ROS2 Foxy Workspace"
+        source ~/colcon_ws/install/setup.zsh
+        eval "$(register-python-argcomplete3 ros2)"
+        eval "$(register-python-argcomplete3 colcon)"
+}
+
+alias noetic=noetic_f
+alias foxy=foxy_f
 alias bridge="source ${HOME}/bridge_ws/install/setup.zsh"
 alias catws="cd ${HOME}/catkin_ws"
 alias colws="cd ${HOME}/colcon_ws"

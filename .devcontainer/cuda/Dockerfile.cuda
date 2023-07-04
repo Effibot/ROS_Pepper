@@ -107,6 +107,7 @@ RUN apt update && apt install --fix-missing -y \
         python3-pip \
         python3-pep8 \
         python3-autopep8 \
+        python-yaml \
         pylint3 \
         ros-dev-tools \
         ros-noetic-topic-tools \
@@ -133,6 +134,15 @@ RUN apt-get update && apt-get install -y git-core bash-completion \
 
 # change user
 USER $USERNAME
+
+# install pip2 
+RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py -P /tmp && \
+        sudo python2 /tmp/get-pip.py
+
+# Intall python packages
+ENV PATH=/home/$USERNAME/.local/bin:$PATH
+RUN pip install -U --no-cache-dir numpy matplotlib plotly
+RUN pip2 install -U --no-cache-dir numpy matplotlib rospkg
 
 # Install LSD for ls substitute
 RUN wget https://github.com/Peltoche/lsd/releases/download/0.23.1/lsd_0.23.1_amd64.deb -P /tmp && \
@@ -163,14 +173,47 @@ RUN sudo $(which rosdep) init && rosdep update --include-eol-distros && \
         sudo apt update \
         && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | xargs -r sudo apt upgrade -y
 
+# Install Additional ROS1 packages
+RUN zsh -c "source /opt/ros/noetic/setup.zsh \
+        && sudo apt update \
+        && sudo apt install -y \
+        ros-noetic-moveit-ros \
+        ros-noetic-navigation \
+        ros-noetic-slam-toolbox \
+        ros-noetic-slam-gmapping \
+        ros-noetic-rtabmap-ros \
+        ros-noetic-moveit \
+        ros-noetic-moveit-ros \
+        ros-noetic-moveit-planners \
+        ros-noetic-pointcloud-to-laserscan \
+        ros-noetic-ddynamic-reconfigure \
+        ros-noetic-ddynamic-reconfigure-python \
+        ros-noetic-naoqi-libqi \
+        ros-noetic-naoqi-libqicore"
+
+# Install additional ROS2 packages
+RUN zsh -c "source /opt/ros/foxy/setup.zsh \
+        && sudo apt update \
+        && sudo apt install -y \
+        ros-foxy-moveit \
+        ros-foxy-navigation2 \
+        ros-foxy-slam-toolbox \
+        ros-foxy-rtabmap-ros \
+        ros-foxy-robot-localization \
+        ros-foxy-moveit \
+        ros-foxy-moveit-ros \
+        ros-foxy-move-base-msgs \
+        ros-foxy-pointcloud-to-laserscan"
+
 # Prepare catkin workspace
 ENV CATKIN_WS=/home/$USERNAME/catkin_ws
 RUN mkdir -p /home/$USERNAME/catkin_ws/src \
         && chown -R $USERNAME:$USERNAME /home/$USERNAME/catkin_ws
 # Initialize catkin workspace and build desired packages
 COPY --chown=$USER_UID:$USER_UID ./config/ros1.repos $CATKIN_WS/src
-RUN cd $CATKIN_WS && rosdep install --from-paths src --ignore-src -r -y \
-        && vcs import < src/ros1.repos src \
+RUN sudo apt update && cd $CATKIN_WS \
+        && vcs import < src/ros1.repos src\
+        && rosdep install --from-paths src --ignore-src -r -y \
         && cd $CATKIN_WS \
         && zsh -c "source /opt/ros/noetic/setup.zsh && catkin build" \
         && rm -rf src/ros1.repos
@@ -209,28 +252,24 @@ RUN mkdir -p /home/$USERNAME/bridge_ws/src \
 # Initialize ros1_bridge workspace and build desired packages
 COPY --chown=$USER_UID:$USER_UID ./config/bridge.repos $BRIDGE_WS/src
 RUN cd $BRIDGE_WS && vcs import < src/bridge.repos src \
+        && rosdep install --from-paths src --ignore-src -r -y \
         # Build packages to be bridged (custom msgs) *before* building the bridge
         && cd $BRIDGE_WS && colcon build --symlink-install --packages-skip ros1_bridge \
         && rm -rf src/bridge.repos
-
 # Build the ros bridge, which now searches paths to connect custom msgs ros1 <-> ros2 in path of installed pkgs (sourced)
 RUN cd $BRIDGE_WS \
         # remove controller-manager-msgs package to avoid known error (issue 329 on github)
-        && sudo dpkg -r --force-depends ros-noetic-controller-manager-msgs \
+        && sudo dpkg -r --force-depends ros-noetic-controller-manager-msgs ros-noetic-rtabmap-msgs ros-noetic-moveit-msgs\
         && zsh -c "source /opt/ros/noetic/setup.zsh && source /opt/ros/foxy/setup.zsh \
         && source $CATKIN_WS/devel/local_setup.zsh \
         && source $COLCON_WS/install/local_setup.zsh \
         && colcon build --symlink-install --packages-select ros1_bridge --cmake-force-configure \
-        --cmake-args -DBUILD_TESTING=FALSE" \
+        --event-handlers console_direct+ --cmake-args -DBUILD_TESTING=FALSE" \
         # Reinstall controller-manager-msgs package fixing broken dependencies
         && sudo apt update && sudo apt --fix-broken install -y
 
 # Clean up
 RUN sudo apt autoremove -y && sudo apt clean -y && sudo rm -rf /var/lib/apt/lists/*
-
-# Intall python packages
-ENV PATH=/home/$USERNAME/.local/bin:$PATH
-RUN pip install -U --no-cache-dir numpy matplotlib plotly
 
 # Entry point
 ENV DEBIAN_FRONTEND=dialog

@@ -8,8 +8,7 @@ echo "Building messages to be bridged"
 cd ${BRIDGE_WS} && colcon build --symlink-install --packages-skip ros1_bridge
 
 # remove the controller-manager-msgs package
-sudo dpkg -r --force-depends ros-noetic-controller-manager-msgs
-
+sudo dpkg -r --force-depends ros-noetic-controller-manager-msgs ros-noetic-rtabmap-msgs ros-noetic-moveit-msgs
 # source ros1
 echo "Sourcing RO1"
 source ${ROS1_INSTALL_PATH}/setup.zsh

@@ -1,60 +1,70 @@
 repositories:
-    ros_msg_parser:
-        type: git
-        url: https://github.com/facontidavide/ros_msg_parser.git
-        version: master
+  ros_msg_parser:
+    type: git
+    url: https://github.com/facontidavide/ros_msg_parser.git
+    version: master
 
-    roboticsgroup_upatras_gazebo_plugins:
-        type: git
-        url: https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git
-        version: master
+  roboticsgroup_upatras_gazebo_plugins:
+    type: git
+    url: https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git
+    version: master
 
-    # libqi:
-    #     type: git
-    #     url: https://github.com/ros-naoqi/libqi.git
-    #     version: v1.12.0-noetic
+  naoqi_bridge_msgs:
+    type: git
+    url: https://github.com/ros-naoqi/naoqi_bridge_msgs
+    version: master
 
-    # libqicore:
-    #     type: git
-    #     url: https://github.com/ros-naoqi/libqicore
-    #     version: v1.12.0-noetic
+  naoqi_driver:
+    type: git
+    url: https://github.com/ros-naoqi/naoqi_driver
+    version: master
 
-    naoqi_bridge_msgs:
-        type: git
-        url: https://github.com/ros-naoqi/naoqi_bridge_msgs
-        version: master
+  naoqi_bridge:
+    type: git
+    url: https://github.com/Effibot/naoqi_bridge.git
+    version: kill-node-when-service-call-failed
 
-    naoqi_driver:
-        type: git
-        url: https://github.com/ros-naoqi/naoqi_driver
-        version: master
+  pepper_robot:
+    type: git
+    url: https://github.com/Effibot/pepper_robot_gazebo.git
+    version: main
 
-    naoqi_bridge:
-        type: git
-        url: https://github.com/Effibot/naoqi_bridge.git
-        version: kill-node-when-service-call-failed
+  pepper_virtual:
+    type: git
+    url: https://github.com/Effibot/pepper_virtual.git
+    version: master
 
-    pepper_robot:
-        type: git
-        url: https://github.com/ros-naoqi/pepper_robot/
-        version: master
+  pepper_moveit_config:
+    type: git
+    url: https://github.com/ros-naoqi/pepper_moveit_config.git
+    version: master
 
-    pepper_virtual:
-        type: git
-        url: https://github.com/ros-naoqi/pepper_virtual
-        version: master
+  humanoid_msgs:
+    type: git
+    url: https://github.com/ahornung/humanoid_msgs.git
+    version: master
 
-    pepper_moveit_config:
-        type: git
-        url: https://github.com/ros-naoqi/pepper_moveit_config.git
-        version: master
+  camera_info_manager_py:
+    type: git
+    url: https://github.com/lucasw/camera_info_manager_py.git
+    version: noetic-devel
 
-    humanoid_msgs:
-        type: git
-        url: https://github.com/ahornung/humanoid_msgs.git
-        version: master
+  extrinsic_calibration:
+    type: git
+    url: https://github.com/tomkimsour/extrinsic_calibration.git
+    version: master
 
-    camera_info_manager_py:
-        type: git
-        url: https://github.com/lucasw/camera_info_manager_py.git
-        version: noetic-devel
+  naoqi_dcm_driver:
+    type: git
+    url: https://github.com/linoxmo/naoqi_dcm_driver.git
+    version: master
+
+  pepper_dcm_driver:
+    type: git
+    url: https://github.com/linoxmo/pepper_dcm_robot.git
+    version: linoxmo/branch
+
+  gazebo_model_velocity_plugin:
+    type: git
+    url: https://github.com/sasilva1998/gazebo_model_velocity_plugin.git
+    version: master
