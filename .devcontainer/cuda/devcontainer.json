@@ -67,6 +67,5 @@
 				"ms-python.black-formatter"
 			]
 		}
-	},
-	"postCreateCommand": "zsh -c ${localworkspaceFolder}/setup.sh"
+	}
 }

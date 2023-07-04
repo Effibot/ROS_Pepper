@@ -131,7 +131,13 @@ RUN apt-get update && apt-get install -y git-core bash-completion \
 # change user
 USER $USERNAME
 
-# install pip2 
+# Initialize ROS depedencies
+RUN sudo $(which rosdep) init && rosdep update --include-eol-distros && \
+        sudo apt update \
+        && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | \
+        xargs -r sudo apt upgrade -y --allow-change-held-packages
+
+# install pip2
 RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py -P /tmp && \
         sudo python2 /tmp/get-pip.py
 
@@ -163,11 +169,6 @@ RUN cd $HOME && chmod +x zsh_docker.sh && ./zsh_docker.sh \
         -p https://github.com/zdharma-continuum/fast-syntax-highlighting \
         -a "set CD_LS_COMMAND=lsd" \
         && rm -f $HOME/zsh_docker.sh
-
-# Initialize ROS depedencies
-RUN sudo $(which rosdep) init && rosdep update --include-eol-distros && \
-        sudo apt update \
-        && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | xargs -r sudo apt upgrade -y
 
 # Install Additional ROS1 packages
 RUN zsh -c "source /opt/ros/noetic/setup.zsh \
@@ -209,8 +210,7 @@ RUN mkdir -p /home/$USERNAME/catkin_ws/src \
 COPY --chown=$USER_UID:$USER_UID ./config/ros1.repos $CATKIN_WS/src
 RUN sudo apt update && cd $CATKIN_WS \
         && vcs import < src/ros1.repos src\
-        && rosdep install --from-paths src --ignore-src -r -y \
-        && cd $CATKIN_WS \
+        && rosdep install --from-paths src --ignore-src -y --rosdistro ${ROS1_DISTRO} \
         && zsh -c "source /opt/ros/noetic/setup.zsh && catkin build" \
         && rm -rf src/ros1.repos
 
@@ -231,7 +231,7 @@ RUN mkdir -p /home/$USERNAME/colcon_ws/src \
 COPY --chown=$USER_UID:$USER_UID ./config/ros2.repos $COLCON_WS/src
 RUN sudo apt update && cd $COLCON_WS \
         && vcs import < src/ros2.repos src\
-        && rosdep install --from-paths src --ignore-src -r -y \
+        && rosdep install --from-paths src --ignore-src -y --rosdistro ${ROS2_DISTRO} \
         && zsh -c 'source /opt/ros/foxy/setup.zsh \
         && colcon build --merge-install --symlink-install \
         --cmake-args "-DCMAKE_BUILD_TYPE=RelWithDebInfo" \
@@ -248,7 +248,7 @@ RUN mkdir -p /home/$USERNAME/bridge_ws/src \
 # Initialize ros1_bridge workspace and build desired packages
 COPY --chown=$USER_UID:$USER_UID ./config/bridge.repos $BRIDGE_WS/src
 RUN cd $BRIDGE_WS && vcs import < src/bridge.repos src \
-        && rosdep install --from-paths src --ignore-src -r -y \
+        && rosdep install --from-paths src --ignore-src -y --rosdistro ${ROS2_DISTRO}\
         # Build packages to be bridged (custom msgs) *before* building the bridge
         && cd $BRIDGE_WS && colcon build --symlink-install --packages-skip ros1_bridge \
         && rm -rf src/bridge.repos

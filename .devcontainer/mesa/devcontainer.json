@@ -17,7 +17,7 @@
 		"--volume=/dev:/dev",
 		"--volume=${localEnv:HOME}/.ssh:/home/ros/.ssh:ro",
 		"--ipc=host",
-		"--gpus=all",
+		"--gpus=all"
 		// uncomment to use intel iGPUContainer
 		// "--device=/dev/dri"
 	],
