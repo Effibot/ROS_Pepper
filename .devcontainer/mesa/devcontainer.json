@@ -52,19 +52,28 @@
 				"althack.ament-task-provider",
 				"betwo.b2-catkin-tools",
 				"DotJoshJohnson.xml",
+				"eamodio.gitlens",
+				"formulahendry.code-runner",
+				"formulahendry.code-runner",
+				"GitHub.copilot",
+				"mads-hartmann.bash-ide-vscode",
 				"ms-azuretools.vscode-docker",
 				"ms-iot.vscode-ros",
+				"ms-python.black-formatter",
+				"ms-python.isort",
 				"ms-python.python",
-				"ms-vscode.cpptools",
+				"ms-python.vscode-pylance",
+				"ms-vscode.cmake-tools",
+				"ms-vscode.cpptools-extension-pack",
+				"oderwat.indent-rainbow",
 				"redhat.vscode-yaml",
+				"shd101wyy.markdown-preview-enhanced",
 				"smilerobotics.urdf",
 				"streetsidesoftware.code-spell-checker",
 				"twxs.cmake",
+				"VisualStudioExptTeam.vscodeintellicode",
 				"yzhang.markdown-all-in-one",
-				"zachflower.uncrustify",
-				"GitHub.copilot",
-				"eamodio.gitlens",
-				"ms-python.black-formatter"
+				"zachflower.uncrustify"
 			]
 		}
 	}
