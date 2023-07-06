@@ -12,12 +12,12 @@ repositories:
     type: git
     url: https://github.com/ros-naoqi/libqicore.git
     version: v2.5.0-foxy
-  naoqi_bridge_msgs:
+  naoqi_bridge_msgs2:
     type: git
-    url: https://github.com/simwijs/naoqi_bridge_msgs.git
-    version: ros2_bridge_fix
-  naoqi_driver:
+    url: https://github.com/Effibot/naoqi_bridge_msgs2
+    version: main
+  naoqi_driver2:
     type: git
-    url: https://github.com/kjs26/naoqi_driver2.git
+    url: https://github.com/Effibot/naoqi_driver2.git
     version: main
   
