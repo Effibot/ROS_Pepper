@@ -3,4 +3,4 @@ install/*
 log/*
 site/*
 # ignore pycache files
-**/__pycache__/*
+*.pyc 
