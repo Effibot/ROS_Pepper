@@ -103,6 +103,7 @@ RUN apt update && apt install --fix-missing -y \
         python3-rosinstall \
         python3-rosinstall-generator \
         python3-vcstool \
+        python3-virtualenv \
         python3-wstool \
         python3-pip \
         python3-pep8 \
@@ -110,17 +111,13 @@ RUN apt update && apt install --fix-missing -y \
         python-yaml \
         pylint3 \
         ros-dev-tools \
-        ros-noetic-topic-tools \
         && rm -rf /var/lib/apt/lists/*
 
+# Create a non-root user
 ARG USERNAME=ros
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 ENV HOME=/home/$USERNAME
-ENV NAOQI=$HOME/naoqi
-ENV PYTHONPATH=$NAOQI/pynaoqi/lib/python2.7/site-packages:$PYTHONPATH
-
-# Create a non-root user
 RUN groupadd --gid $USER_GID $USERNAME \
         && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
         # Add sudo support for the non-root user
@@ -136,35 +133,6 @@ RUN apt-get update && apt-get install -y git-core bash-completion \
 
 # change user
 USER $USERNAME
-
-# download and install NAOqi SDK
-RUN mkdir $HOME/naoqi && \
-        wget https://community-static.aldebaran.com/resources/2.5.10/Python%20SDK/pynaoqi-python2.7-2.5.7.1-linux64.tar.gz -P /tmp && \
-        wget https://community-static.aldebaran.com/resources/2.5.10/NAOqi%20SDK/naoqi-sdk-2.5.7.1-linux64.tar.gz -P /tmp && \
-        tar -xvzf /tmp/pynaoqi-python2.7-* -C $NAOQI && mv $NAOQI/pynaoqi-* $NAOQI/pynaoqi && \
-        tar -xvzf /tmp/naoqi-sdk-* -C $NAOQI && mv $NAOQI/naoqi-sdk-* $NAOQI/naoqi-sdk && \
-        rm -rf /tmp/pynaoqi-python2.7-* && \
-        rm -rf /tmp/naoqi-sdk-*
-
-# Initialize ROS depedencies
-RUN sudo $(which rosdep) init && rosdep update --include-eol-distros && \
-        sudo apt update \
-        && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | \
-        xargs -r sudo apt upgrade -y --allow-change-held-packages
-
-# install pip2
-RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py -P /tmp && \
-        sudo python2 /tmp/get-pip.py
-
-# Intall python packages
-ENV PATH=/home/$USERNAME/.local/bin:$PATH
-RUN pip install -U --no-cache-dir numpy matplotlib plotly
-RUN pip2 install -U --no-cache-dir numpy matplotlib rospkg
-
-# Install LSD for ls substitute
-RUN wget https://github.com/Peltoche/lsd/releases/download/0.23.1/lsd_0.23.1_amd64.deb -P /tmp && \
-        sudo dpkg -i /tmp/lsd_0.23.1_amd64.deb && \
-        rm /tmp/lsd_0.23.1_amd64.deb
 
 # Install ZSH
 COPY --chown=$USER_UID:$USER_UID ./config/zsh_docker.sh $HOME
@@ -185,6 +153,54 @@ RUN cd $HOME && chmod +x zsh_docker.sh && ./zsh_docker.sh \
         -a "set CD_LS_COMMAND=lsd" \
         && rm -f $HOME/zsh_docker.sh
 
+# Install LSD for ls substitute
+RUN wget https://github.com/Peltoche/lsd/releases/download/0.23.1/lsd_0.23.1_amd64.deb -P /tmp && \
+        sudo dpkg -i /tmp/lsd_0.23.1_amd64.deb && \
+        rm /tmp/lsd_0.23.1_amd64.deb
+
+# install pip2
+RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py -P /tmp && \
+        sudo python2 /tmp/get-pip.py
+
+# ------------------- #
+
+ENV VENVS=$HOME/venvs
+ENV NAOQI=$HOME/naoqi
+ENV PYTHONPATH=$NAOQI/pynaoqi/lib/python2.7/site-packages:$PYTHONPATH
+
+# Create virtual environment
+RUN virtualenv --system-site-packages -p python2.7 ${VENVS}/py27 && \
+        # update pip and install basic things on python2.7
+        ./${VENVS}/py27/bin/python -m pip install --user --no-cache-dir --upgrade pip && \
+        ./${VENVS}/py27/bin/python -m pip install --user --no-cache-dir --upgrade \
+        numpy scipy matplotlib pbr autopep8==1.6.0 pylint pandas joblib opencv-contrib-python==4.2.0.32
+
+# download and install NAOqi SDK
+RUN mkdir $HOME/naoqi && \
+        wget https://community-static.aldebaran.com/resources/2.5.10/Python%20SDK/pynaoqi-python2.7-2.5.7.1-linux64.tar.gz -P /tmp && \
+        wget https://community-static.aldebaran.com/resources/2.5.10/NAOqi%20SDK/naoqi-sdk-2.5.7.1-linux64.tar.gz -P /tmp && \
+        tar -xvzf /tmp/pynaoqi-python2.7-* -C $NAOQI && mv $NAOQI/pynaoqi-* $NAOQI/pynaoqi && \
+        tar -xvzf /tmp/naoqi-sdk-* -C $NAOQI && mv $NAOQI/naoqi-sdk-* $NAOQI/naoqi-sdk && \
+        rm -rf /tmp/pynaoqi-python2.7-* && \
+        rm -rf /tmp/naoqi-sdk-*
+
+# Initialize ROS depedencies
+RUN sudo $(which rosdep) init && rosdep update --include-eol-distros && \
+        sudo apt update \
+        && apt list --upgradable | tail -n +2 | awk -F'/' '{print $1}' | \
+        xargs -r sudo apt upgrade -y --allow-change-held-packages
+
+# Intall python packages
+ENV PATH=$PATH:$HOME/.local/bin
+RUN pip install -U --no-cache-dir numpy matplotlib plotly opencv-contrib-python
+RUN pip2 install -U --no-cache-dir numpy matplotlib rospkg opencv-contrib-python qibuild
+
+# Setup qi toolchain for naoqi
+RUN cd $CATKIN_WS && echo '1\n\1\n' | ~/.local/bin/qibuild config --wizard \
+        && qibuild init && cd $NAOQI/naoqi-sdk \
+        && qitoolchain create mytoolchain toolchain.xml \
+        && cd $CATKIN_WS && qibuild add-config myconfig -t mytoolchain --default
+
 # Install Additional ROS1 packages
 RUN zsh -c "source /opt/ros/noetic/setup.zsh \
         && sudo apt update \
@@ -201,7 +217,8 @@ RUN zsh -c "source /opt/ros/noetic/setup.zsh \
         ros-noetic-ddynamic-reconfigure \
         ros-noetic-ddynamic-reconfigure-python \
         ros-noetic-naoqi-libqi \
-        ros-noetic-naoqi-libqicore"
+        ros-noetic-naoqi-libqicore \
+        ros-noetic-topic-tools"
 
 # Install additional ROS2 packages
 RUN zsh -c "source /opt/ros/foxy/setup.zsh \
@@ -215,7 +232,15 @@ RUN zsh -c "source /opt/ros/foxy/setup.zsh \
         ros-foxy-moveit \
         ros-foxy-moveit-ros \
         ros-foxy-move-base-msgs \
+        ros-foxy-naoqi-libqi \
         ros-foxy-pointcloud-to-laserscan"
+
+# Install Pepper Meshes for ros1
+RUN echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections \
+        && echo 'ros-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true' | \
+        sudo debconf-set-selections \
+        && sudo apt update && sudo apt install -y ros-noetic-pepper-meshes \
+        && sudo rm -rf /var/lib/apt/lists/*
 
 # Prepare catkin workspace
 ENV CATKIN_WS=/home/$USERNAME/catkin_ws
@@ -228,12 +253,6 @@ RUN sudo apt update && cd $CATKIN_WS \
         && rosdep install --from-paths src --ignore-src -y --rosdistro ${ROS1_DISTRO} \
         && zsh -c "source /opt/ros/noetic/setup.zsh && catkin build" \
         && rm -rf src/ros1.repos
-
-# Install Pepper Meshes
-RUN echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections \
-        && echo 'ros-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true' | sudo debconf-set-selections \
-        && sudo apt update && sudo apt install -y ros-noetic-pepper-meshes \
-        && sudo rm -rf /var/lib/apt/lists/*
 
 # Unset
 ENV ROS_DISTRO=

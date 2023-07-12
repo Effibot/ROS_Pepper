@@ -3,6 +3,7 @@
     "editor.rulers": [
         100
     ],
+    "editor.defaultFormatter": null,
     "files.associations": {
         "*.repos": "yaml",
         "*.world": "xml",
@@ -88,5 +89,13 @@
         ".vscode",
         ".vscode-insiders",
         ".devcontainer/devcontainer.json"
-    ]
+    ],
+    "python.formatting.blackArgs": ["--line-length", "100"],
+    "python.formatting.provider": "none",
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "file",
+        "editor.formatOnPaste": false,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+    }
 }

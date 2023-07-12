@@ -9,7 +9,7 @@ env -i SHELL=/bin/zsh zsh -c "source /opt/ros/noetic/setup.zsh; source ~/catkin_
 # build ROS2 workspace
 echo "Building Foxy Workspace"
 env -i SHELL=/bin/zsh zsh -c "source /opt/ros/foxy/setup.zsh; source ~/colcon_ws/install/setup.zsh \
-&& colcon build --merge-install --symlink-install --event-handlers console_direct+ \
+&& cd ${COLCON_WS} && colcon build --merge-install --symlink-install --event-handlers console_direct+ \
 --cmake-args '-DCMAKE_BUILD_TYPE=RelWithDebInfo' '-DCMAKE_EXPORT_COMPILE_COMMANDS=On' \
 -Wall -Wextra -Wpedantic"
         

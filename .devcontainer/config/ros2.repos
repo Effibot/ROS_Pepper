@@ -4,14 +4,14 @@ repositories:
   #   type: git
   #   url: https://github.com/ros2/examples.git
   #   version: foxy
-  libqi:
-    type: git
-    url: https://github.com/ros-naoqi/libqi.git
-    version: v2.5.0-foxy
+  #libqi:
+  #  type: git
+  #  url: https://github.com/ros-naoqi/libqi.git
+  #  version: v2.5.0-foxy
   libqicore:
     type: git
     url: https://github.com/ros-naoqi/libqicore.git
-    version: v2.5.0-foxy
+    version: ros2
   naoqi_bridge_msgs2:
     type: git
     url: https://github.com/Effibot/naoqi_bridge_msgs2
