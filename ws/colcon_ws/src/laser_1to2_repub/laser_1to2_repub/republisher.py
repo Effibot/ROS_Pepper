@@ -12,6 +12,7 @@ class Laser1to2Republisher(Node):
     def __init__(self):
         super().__init__("laser_1to2_repub")
         self.create_subscription(LaserScan, "pepper/laser_2", self.scan_callback, 10)
+        # self.create_subscription(LaserScan, "laser", self.scan_callback, 10)
         self.pub = self.create_publisher(LaserScan, "scan", 10)
 
     def scan_callback(self, msg):
