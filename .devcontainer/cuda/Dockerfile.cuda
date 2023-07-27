@@ -209,7 +209,9 @@ RUN zsh -c "source /opt/ros/noetic/setup.zsh \
         ros-noetic-navigation \
         ros-noetic-slam-toolbox \
         ros-noetic-slam-gmapping \
+        ros-noetic-robot-localization \
         ros-noetic-rtabmap-ros \
+        ros-noetic-rqt\* \
         ros-noetic-moveit \
         ros-noetic-moveit-ros \
         ros-noetic-moveit-planners \
@@ -229,6 +231,7 @@ RUN zsh -c "source /opt/ros/foxy/setup.zsh \
         ros-foxy-slam-toolbox \
         ros-foxy-rtabmap-ros \
         ros-foxy-robot-localization \
+        ros-foxy-rqt\* \
         ros-foxy-moveit \
         ros-foxy-moveit-ros \
         ros-foxy-move-base-msgs \
