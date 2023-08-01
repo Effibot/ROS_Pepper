@@ -4,3 +4,4 @@ log/*
 site/*
 # ignore pycache files
 *.pyc 
+*.db
