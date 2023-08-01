@@ -20,7 +20,7 @@ def generate_launch_description():
     # remapping topic names
     remappings = [
         ("odom", "/odom"),
-        ("scan", "/laser"),
+        ("scan", "/scan"), # /laser
         ("depth/image", "/camera/depth/image_raw"),
         ("rgb/image", "/camera/front/image_raw"),
         ("rgb/camera_info", "/camera/front/camera_info"),

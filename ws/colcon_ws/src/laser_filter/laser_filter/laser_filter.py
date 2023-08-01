@@ -46,7 +46,6 @@ class LaserFilter(Node):
         # ros logger
         self.logger = self.get_logger()
         # set the timer to publish the filtered laser scan msg
-        self.timer = self.create_timer(1., self.timer_callback)
 
     def scan_callback(self, msg):
         # self.logger.info("Received a laser scan msg.")
